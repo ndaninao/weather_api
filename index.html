@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+  <!-- Added link to the jQuery Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Added a link to Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <header>Weather Dashboard</header>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+                <div class="searchInput">Search for a City:</div>
+                    <input type='text' placeholder='Search...' id='search-text-input'>
+                <div id="button-holder">
+                     <img src="magnifying_search.png">
+                </div>
+                <br></br>
+                <div class="recentSearch"> 
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="searchResult">
+              <h1 id="city">City: </h1>
+              <div id="temp">Temperature: </div>
+              <div id="humidity">Humidity: </div>
+              <div id="windSpd">Wind Speed: </div>
+              <div id="uv">UV Index: </div>
+            </div>
+            <div class="row"></div>
+              <h1>5-Day Forecast:</h1>
+              <div class="row">
+                <div class="col-md-2" id="day-1">
+                  <h1 id="date1">Date</h1>
+                  <img src="sunny.png"> 
+                  <p id="temp1">Temp</p>
+                  <p id="humidity1">Humidity</p>
+                </div>
+                <div class="col-md-2" id="day-2">
+                  <h1 id="date2">Date</h1>
+                  <img src=> 
+                  <p id="temp2">Temp</p>
+                  <p id="humidity2">Humidity</p>
+                </div>
+                <div class="col-md-2" id="day-3">
+                  <h1 id="date3">Date</h1>
+                  <img src=> 
+                  <p id="temp3">Temp</p>
+                  <p id="humidity3">Humidity</p>
+                </div>
+                <div class="col-md-2" id="day-4">
+                  <h1 id="date4">Date</h1>
+                  <img src=> 
+                  <p id="temp4">Temp</p>
+                  <p id="humidity4">Humidity</p>
+                </div>
+                <div class="col-md-2" id="day-5">
+                  <h1 id="date5">Date</h1>
+                  <img src=> 
+                  <p id="temp5">Temp</p>
+                  <p id="humidity5">Humidity</p>
+                </div>  
+            </div>       
+        </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+      // This is our API key
+      var APIKey = "eea36bfb091abe361b9a6dbec4762413";
+      var city = [];
+      var tempF = (response.main.temp - 273.15) * 1.80 + 32;
+      var cityLat = response.coord.lat;
+      var cityLon = response.coord.lon;
+      var imgIcon = [
+        "sunny.png",
+        "partlysunny.png",
+        "cloudy.png",
+        "rainy.png",
+        "thunderstorm.png",
+        "snow.png"]; //array of image icons to be used 
+
+      var fullDate = newDate()
+      var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
+      var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+  
+      // Here we are building the URL we need to query the database
+      var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" +
+        city + "&appid=" + APIKey; //+ "&uvi?lat=" + cityLat + "&lon=" + cityLon;
+                     // + "&forecast?q=" ??? put weather&forecast
+
+      //Do I do three separate URL and thus .ajax? 
+  
+      //pull input from search box and place into API query 
+      function citySearch() {
+      $("#button-holder").on("click", function() {
+          $("#search-text-input").val() = city;
+          //link input value to city array in API - how to do this? 
+          //search input value should be a city only - and lower case...
+        });
+      };
+
+      // Here we run our AJAX call to the OpenWeatherMap API
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function(response) {
+          $("#city").text(response.name + currentDate);
+          $("#temp").text("Temperature (F) " + tempF.toFixed(2));
+          $("#humidity").text("Humidity: " + response.main.humidity);
+          $("#windSpd").text("Wind Speed: " + response.wind.speed);
+          $("#uv").text("UV Index: " + response.value);
+
+          
+        $("#date1").text(response.list.dt_txt[0]);
+        $("#date2").text(response.list.dt_txt[1]);
+        $("#date3").text(response.list.dt_txt[2]);
+        $("#date4").text(response.list.dt_txt[3]);
+        $("#date5").text(response.list.dt_txt[4]);
+
+        $("#temp1").text(response.list.main.temp[0] - 273.15) * 1.80 + 32;
+        $("#temp2").text(response.list.main.temp[1] - 273.15) * 1.80 + 32;
+        $("#temp3").text(response.list.main.temp[2] - 273.15) * 1.80 + 32;
+        $("#temp4").text(response.list.main.temp[3] - 273.15) * 1.80 + 32;
+        $("#temp5").text(response.list.main.temp[4] - 273.15) * 1.80 + 32;
+
+        $("#humidity1").text(response.list.main.humidity[0]);
+        $("#humidity2").text(response.list.main.humidity[1]);
+        $("#humidity3").text(response.list.main.humidity[2]);
+        $("#humidity4").text(response.list.main.humidity[3]);
+        $("#humidity5").text(response.list.main.humidity[4]);
+
+
+        //last engine search populate 
+        // last search 
+        //$(".recentSearch").prepend(citySearch);
+
+    
+      });
+        });
+
+      
+
+    </script>
+
+ </body>
